@@ -13,6 +13,7 @@ return {
     },
   },
   { 'Bilal2453/luvit-meta', lazy = true },
+  { 'b0o/schemastore.nvim' }, -- to allow more flexibility in selecting and ignoring json/yaml schemas
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -183,6 +184,45 @@ return {
         terraformls = {},
         ansiblels = {},
         ruby_lsp = {},
+        jsonls = {},
+        helm_ls = {},
+        markdownlint = {},
+        powershell_es = {},
+        tflint = {},
+        yamllint = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              schemaStore = {
+                -- You must disable built-in schemaStore support if you want to use
+                -- this plugin and its advanced options like `ignore`.
+                enable = false,
+                -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+                url = '',
+              },
+              completion = true,
+              validate = true,
+              format = {
+                enable = true,
+              },
+              hover = true,
+              schemas = require('schemastore').yaml.schemas {
+                ignore = {
+                  'prometheus.rules.json',
+                },
+                kubernetes = 'k8s-*.yaml',
+                ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
+                ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
+                ['http://json.schemastore.org/ansible-stable-2.9'] = 'roles/tasks/**/*.{yml,yaml}',
+                ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
+                ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
+                ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
+                ['http://json.schemastore.org/circleciconfig'] = '.circleci/**/*.{yml,yaml}',
+              },
+            },
+          },
+        },
+        prettier = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
