@@ -156,6 +156,10 @@ return {
       --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.foldingRange = { -- turn on folding settings for LSP. Used with nvim-ufo for better folding
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       -- Enable the following language servers
@@ -196,17 +200,17 @@ return {
               schemaStore = {
                 -- You must disable built-in schemaStore support if you want to use
                 -- this plugin and its advanced options like `ignore`.
-                enable = false,
+                enable = true,
                 -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-                url = '',
+                url = 'https://www.schemastore.org/api/json/catalog.json',
               },
               completion = true,
               validate = true,
               format = {
-                enable = true,
+                enable = false,
               },
               hover = true,
-              schemas = require('schemastore').yaml.schemas {
+              schemas = {
                 ignore = {
                   'prometheus.rules.json',
                 },
@@ -218,6 +222,7 @@ return {
                 ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
                 ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
                 ['http://json.schemastore.org/circleciconfig'] = '.circleci/**/*.{yml,yaml}',
+                ['http://json.schemastore.org/helmfile'] = 'helmfile.yaml',
               },
             },
           },

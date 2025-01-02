@@ -62,4 +62,12 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- PH edits
+-- -- native folding (with treesitter)
+-- vim.opt.foldmethod = 'expr'
+-- vim.opt.foldexpr = 'nvim_treesitter#foldexpr()' -- use treesitter for smarter folds
+vim.opt.foldenable = true -- enable
+vim.opt.foldlevelstart = 99 -- but started with all folds open
+vim.opt.foldcolumn = '1' -- show foldcolum
+
 -- vim: ts=2 sts=2 sw=2 et
