@@ -28,7 +28,7 @@ return {
             ignore = {
               'prometheus.rules.json',
             },
-            -- kubernetes = '*.yaml',
+            kubernetes = '*.{yaml,yml}',
             ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
             ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
             ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = '*azure-pipelines*.{yml,yaml}',
