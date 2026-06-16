@@ -9,7 +9,9 @@ return {
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    -- master (not the frozen 0.1.x release branch): uses the native vim.treesitter API,
+    -- required for compatibility with nvim-treesitter `main` on Neovim 0.12+.
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -77,6 +79,12 @@ return {
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set(
+        'n',
+        '<leader>sa',
+        "<cmd>lua require('telescope.builtin').find_files({ hidden = true , no_ignore = true})<CR>",
+        { desc = '[S]earch [A]ll files' }
+      )
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })

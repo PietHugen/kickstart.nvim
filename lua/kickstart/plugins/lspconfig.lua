@@ -116,7 +116,7 @@ return {
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -143,7 +143,7 @@ return {
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
@@ -191,50 +191,7 @@ return {
         ruby_lsp = {},
         jsonls = {},
         helm_ls = {},
-        markdownlint = {},
         powershell_es = {},
-        tflint = {},
-        yamllint = {},
-        yamlls = {
-          -- moved to yaml-companion addon!
-          -- settings = {
-          --   yaml = {
-          --     schemaStore = {
-          --       -- You must disable built-in schemaStore support if you want to use
-          --       -- this plugin and its advanced options like `ignore`.
-          --       enable = true,
-          --       -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-          --       url = 'https://www.schemastore.org/api/json/catalog.json',
-          --     },
-          --     completion = true,
-          --     validate = true,
-          --     format = {
-          --       enable = false,
-          --     },
-          --     hover = true,
-          --     schemas = {
-          --       ignore = {
-          --         'prometheus.rules.json',
-          --       },
-          --       -- kubernetes = '*.yaml',
-          --       ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
-          --       ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = '*azure-pipelines*.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks'] = 'roles/tasks/*.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook'] = '*play*.{yml,yaml}',
-          --       ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
-          --       ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
-          --       ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
-          --       ['https://json.schemastore.org/dependabot-v2'] = '.github/dependabot.{yml,yaml}',
-          --       ['https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json'] = '*gitlab-ci*.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] = '*api*.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] = '*docker-compose*.{yml,yaml}',
-          --       ['https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json'] = '*flow*.{yml,yaml}',
-          --     },
-          --   },
-          -- },
-        },
-        prettier = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -264,20 +221,31 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'yaml-language-server',
+        'yamllint',
+        'prettier',
+        'markdownlint',
+        'tflint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- Apply our merged capabilities (cmp + nvim-ufo foldingRange) to ALL servers
+      -- via the nvim 0.11+ wildcard config.
+      vim.lsp.config('*', { capabilities = capabilities })
+
+      -- Apply per-server overrides from the `servers` table above.
+      for server_name, server in pairs(servers) do
+        if next(server) ~= nil then
+          vim.lsp.config(server_name, server)
+        end
+      end
+
       require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        ensure_installed = {}, -- tool installation is handled by mason-tool-installer above
+        -- mason-lspconfig v2 auto-enables every installed Mason package that maps to an
+        -- LSP server. Exclude `stylua` (a formatter with no langserver; it would be started
+        -- as `stylua --lsp` and crash).
+        automatic_enable = { exclude = { 'stylua' } },
       }
     end,
   },
