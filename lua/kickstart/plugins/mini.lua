@@ -32,6 +32,20 @@ return {
         return '%2l:%-2v'
       end
 
+      -- Show YAML schema name after filetype in fileinfo section
+      local orig_section_fileinfo = statusline.section_fileinfo
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_fileinfo = function(args)
+        local info = orig_section_fileinfo(args)
+        if vim.bo.filetype == 'yaml' then
+          local name = vim.b.yaml_schema_name
+          if name then
+            info = info:gsub('(yaml)', '%1(' .. name .. ')')
+          end
+        end
+        return info
+      end
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
