@@ -56,6 +56,13 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
 }, {
+  performance = {
+    rtp = {
+      -- Built-in runtime plugins that aren't used. Keep netrw: `nvim <dir>` relies on it
+      -- because neo-tree is lazy-loaded.
+      disabled_plugins = { 'gzip', 'tarPlugin', 'zipPlugin', 'tohtml', 'tutor', 'rplugin' },
+    },
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
