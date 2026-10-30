@@ -13,6 +13,10 @@ require 'options'
 -- [[ Basic Keymaps ]]
 require 'keymaps'
 
+-- Put Mason-installed tools (LSP servers, linters, formatters) on PATH without loading
+-- mason.nvim at startup. This is what `require('mason').setup()` would do.
+vim.env.PATH = vim.fn.stdpath 'data' .. '/mason/bin:' .. vim.env.PATH
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 require 'lazy-bootstrap'
 
