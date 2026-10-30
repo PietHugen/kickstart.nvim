@@ -6,8 +6,20 @@ return {
     -- Only needed once a buffer is open; not at startup.
     event = { 'BufReadPost', 'BufNewFile' },
     keys = {
-      { 'zR', function() require('ufo').openAllFolds() end, desc = 'Open all folds' },
-      { 'zM', function() require('ufo').closeAllFolds() end, desc = 'Close all folds' },
+      {
+        'zR',
+        function()
+          require('ufo').openAllFolds()
+        end,
+        desc = 'Open all folds',
+      },
+      {
+        'zM',
+        function()
+          require('ufo').closeAllFolds()
+        end,
+        desc = 'Close all folds',
+      },
     },
     config = function()
       -- Option 3: treesitter as a main provider instead of LSP or coc.nvim
