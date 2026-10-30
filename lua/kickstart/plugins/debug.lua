@@ -25,28 +25,25 @@ return {
     'leoluz/nvim-dap-go',
     'mfussenegger/nvim-dap-python',
   },
-  keys = function(_, keys)
-    local dap = require 'dap'
-    local dapui = require 'dapui'
-    return {
-      -- Basic debugging keymaps, feel free to change to your liking!
-      { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
-      { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
-      { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
-      { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
-      { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
-      {
-        '<leader>B',
-        function()
-          dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end,
-        desc = 'Debug: Set Breakpoint',
-      },
-      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
-      unpack(keys),
-    }
-  end,
+  -- Keys as a plain table with lazy `require` wrappers: a `keys = function()` that
+  -- requires dap is evaluated by lazy.nvim at startup and loads the whole DAP stack.
+  keys = {
+    -- Basic debugging keymaps, feel free to change to your liking!
+    { '<F5>', function() require('dap').continue() end, desc = 'Debug: Start/Continue' },
+    { '<F1>', function() require('dap').step_into() end, desc = 'Debug: Step Into' },
+    { '<F2>', function() require('dap').step_over() end, desc = 'Debug: Step Over' },
+    { '<F3>', function() require('dap').step_out() end, desc = 'Debug: Step Out' },
+    { '<leader>b', function() require('dap').toggle_breakpoint() end, desc = 'Debug: Toggle Breakpoint' },
+    {
+      '<leader>B',
+      function()
+        require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+      end,
+      desc = 'Debug: Set Breakpoint',
+    },
+    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+    { '<F7>', function() require('dapui').toggle() end, desc = 'Debug: See last session result.' },
+  },
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
@@ -58,49 +55,7 @@ return {
 
       -- You can provide additional configuration to the handlers,
       -- see mason-nvim-dap README for more information
-      handlers = {
-        --local python_install_path = vim.fn.exepath('python')
-        require('dap-python').setup(), -- Debug with default settings.
-
-        -- We can set additional custom config by below mechanism as well
-        --[[
-    table.insert(require('dap').configurations.python,
-    {
-      type = 'python',
-      request = 'launch',
-      name = 'My custom launch configuration',
-      program = '${file}',
-      cwd = vim.fn.getcwd(),
-      console= "integratedTerminal",
-    })
-    --]]
-
-        table.insert(require('dap').configurations.python, {
-          name = 'Pytest: Current File',
-          type = 'python',
-          request = 'launch',
-          module = 'pytest',
-          args = {
-            '${file}',
-            '-sv',
-            '--log-cli-level=INFO',
-            '--log-file=test_out.log',
-          },
-          console = 'integratedTerminal',
-        }),
-        table.insert(require('dap').configurations.python, {
-          name = 'Profile python: Current File',
-          type = 'python',
-          request = 'launch',
-          module = 'cProfile',
-          args = {
-            '-o',
-            '/tmp/profile.dat',
-            '${file}',
-          },
-          console = 'integratedTerminal',
-        }),
-      },
+      handlers = {},
 
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
@@ -110,6 +65,33 @@ return {
         'python',
       },
     }
+
+    require('dap-python').setup() -- Debug with default settings.
+    table.insert(dap.configurations.python, {
+      name = 'Pytest: Current File',
+      type = 'python',
+      request = 'launch',
+      module = 'pytest',
+      args = {
+        '${file}',
+        '-sv',
+        '--log-cli-level=INFO',
+        '--log-file=test_out.log',
+      },
+      console = 'integratedTerminal',
+    })
+    table.insert(dap.configurations.python, {
+      name = 'Profile python: Current File',
+      type = 'python',
+      request = 'launch',
+      module = 'cProfile',
+      args = {
+        '-o',
+        '/tmp/profile.dat',
+        '${file}',
+      },
+      console = 'integratedTerminal',
+    })
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
