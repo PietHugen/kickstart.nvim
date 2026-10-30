@@ -1,0 +1,15 @@
+# Structural commit-message rules. Conventional Commits type prefix is required;
+# the length rules below cap prose drift. Rationale belongs in docs, not commits.
+[general]
+contrib=contrib-title-conventional-commits
+# body-min-length / body-is-missing: a one-line subject with no body is the encouraged case.
+ignore=body-min-length,body-is-missing
+
+[contrib-title-conventional-commits]
+types=feat,fix,docs,style,refactor,perf,test,build,ci,chore,revert
+
+[title-max-length]
+line-length=72
+
+[body-max-line-length]
+line-length=100

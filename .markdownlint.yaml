@@ -1,0 +1,11 @@
+---
+# Long lines and compact tables are fine; blank lines around headings/lists/fences
+# are enforced so files render the same everywhere.
+default: true
+MD013: false   # line length
+MD060: false   # table column style: compact `|---|---|` separators
+MD033: false   # inline HTML (hidden markers, tags quoted in docs)
+MD034: false   # bare URLs
+MD041: false   # first-line heading
+MD046:
+  style: fenced
