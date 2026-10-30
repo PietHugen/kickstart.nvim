@@ -159,7 +159,7 @@ return {
       cfg.capabilities = vim.tbl_deep_extend('force', {}, capabilities, cfg.capabilities or {})
 
       vim.lsp.config('yamlls', cfg)
-      vim.lsp.enable('yamlls')
+      vim.lsp.enable 'yamlls'
 
       -- Auto-detect K8s/CRD schemas on file open and save
       vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
@@ -191,7 +191,7 @@ return {
         client.settings.yaml.schemas['kubernetes'] = fname
         client:notify('workspace/didChangeConfiguration', { settings = client.settings })
         vim.b[bufnr].yaml_schema_name = 'Kubernetes'
-        vim.notify('Set Kubernetes schema')
+        vim.notify 'Set Kubernetes schema'
       end, { desc = 'Set [Y]aml [K]ubernetes schema' })
     end,
   },

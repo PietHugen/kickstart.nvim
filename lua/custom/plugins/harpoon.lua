@@ -1,26 +1,75 @@
 return {
   {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
     -- Loaded on first use of one of these keys instead of at startup.
     keys = {
-      { "<leader>a", function() require("harpoon"):list():add() end, desc = "Harpoon: add file" },
-      { "<C-e>", function() local harpoon = require("harpoon") harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon: menu" },
+      {
+        '<leader>a',
+        function()
+          require('harpoon'):list():add()
+        end,
+        desc = 'Harpoon: add file',
+      },
+      {
+        '<C-e>',
+        function()
+          local harpoon = require 'harpoon'
+          harpoon.ui:toggle_quick_menu(harpoon:list())
+        end,
+        desc = 'Harpoon: menu',
+      },
 
-      { "<leader>1", function() require("harpoon"):list():select(1) end, desc = "Harpoon: file 1" },
-      { "<leader>2", function() require("harpoon"):list():select(2) end, desc = "Harpoon: file 2" },
-      { "<leader>3", function() require("harpoon"):list():select(3) end, desc = "Harpoon: file 3" },
-      { "<leader>4", function() require("harpoon"):list():select(4) end, desc = "Harpoon: file 4" },
+      {
+        '<leader>1',
+        function()
+          require('harpoon'):list():select(1)
+        end,
+        desc = 'Harpoon: file 1',
+      },
+      {
+        '<leader>2',
+        function()
+          require('harpoon'):list():select(2)
+        end,
+        desc = 'Harpoon: file 2',
+      },
+      {
+        '<leader>3',
+        function()
+          require('harpoon'):list():select(3)
+        end,
+        desc = 'Harpoon: file 3',
+      },
+      {
+        '<leader>4',
+        function()
+          require('harpoon'):list():select(4)
+        end,
+        desc = 'Harpoon: file 4',
+      },
 
       -- Toggle previous & next buffers stored within Harpoon list
-      { "<C-p>", function() require("harpoon"):list():prev() end, desc = "Harpoon: previous" },
-      { "<C-n>", function() require("harpoon"):list():next() end, desc = "Harpoon: next" },
+      {
+        '<C-p>',
+        function()
+          require('harpoon'):list():prev()
+        end,
+        desc = 'Harpoon: previous',
+      },
+      {
+        '<C-n>',
+        function()
+          require('harpoon'):list():next()
+        end,
+        desc = 'Harpoon: next',
+      },
     },
     config = function()
       -- REQUIRED
-      require("harpoon"):setup()
+      require('harpoon'):setup()
       -- REQUIRED
-    end
+    end,
   },
 }
